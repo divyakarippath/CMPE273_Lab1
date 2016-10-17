@@ -1,0 +1,22 @@
+22:38:42.784 INFO  select * from members where email='divya.ebay@gmail.com' and password='divya' 
+22:38:42.805 INFO  Login successfulfor the user, 1 
+22:38:44.621 INFO  The user 1accessing /homepage 
+22:42:18.180 INFO  The user 1logging out 
+22:42:30.361 INFO  select * from members where email='vidya2rhyme@gmail.com' and password='vidya' 
+22:42:38.945 INFO  select * from members where email='vidya.ebay@gmail.com' and password='vidya' 
+22:42:38.952 INFO  Login successfulfor the user, 2 
+22:42:40.326 INFO  The user 2accessing /homepage 
+22:42:44.358 INFO  The user 2accessing /userprofile 
+22:42:45.571 INFO  The user 2accessing /marketPlace 
+22:42:47.807 INFO  The user 2added a new advertisement 
+22:42:50.952 INFO  The user 2logging out 
+22:43:09.035 INFO  select * from members where email='radhika.ebay@gmail.com' and password='radhika' 
+22:43:09.040 INFO  Login successfulfor the user, 3 
+22:43:11.180 INFO  The user 3accessing /homepage 
+22:43:13.158 INFO  The user 3accessing the advertisements page 
+22:43:17.975 INFO  The user 3added Apple iPhone 7to cart 
+22:44:44.537 INFO  The user 3placed an order 
+22:44:46.152 INFO  The user 3accessing /homepage 
+22:44:48.118 INFO  The user 3accessing /userprofile 
+22:44:49.622 INFO  The user 3accessing the advertisements page 
+22:44:51.388 INFO  The user 3logging out 
