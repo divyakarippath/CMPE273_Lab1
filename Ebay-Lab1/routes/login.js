@@ -3,6 +3,7 @@
  */
 
 var mysql = require('./mysql');
+var CryptoJS = require("crypto-js");
 var SimpleNodeLogger = require('simple-node-logger'),
 opts = {
 	logFilePath:'mylogfile.log',
@@ -17,7 +18,7 @@ exports.checkLogin = function(req, res) {
 	var password = req.param("password");
 	var json_responses;
 	var getUser = "select * from members where email='" + email
-			+ "' and password='" + password + "'";
+			+ "'";
 	log.info(getUser);
 	mysql.fetchData(function(err, results) {
 		console.log("DB Results:" + results);
@@ -25,24 +26,38 @@ exports.checkLogin = function(req, res) {
 			throw err;
 		} else {
 			if (results.length > 0) {
-				req.session.email = results[0].email;
-				req.session.name = results[0].firstname;
-				req.session.lastname = results[0].lastname;
-				req.session.id = results[0].user_id;
-				req.session.birthday = results[0].birthday;
-				req.session.mob = results[0].mob;
-				req.session.location = results[0].city+", "+results[0].state;
-				var lastlogdt = results[0].lastlogin;
-				if(lastlogdt!=null){
-					req.session.lastlogin = lastlogdt.substring(0,25);
-				}else{
-					req.session.lastlogin = '';
+				var pwd = results[0].password;
+				var bytes  = CryptoJS.AES.decrypt(pwd.toString(), 'ebay_divya');
+				var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+				console.log(password);
+				console.log(plaintext);
+				if(plaintext == password){
+					req.session.email = results[0].email;
+					req.session.name = results[0].firstname;
+					req.session.lastname = results[0].lastname;
+					req.session.id = results[0].user_id;
+					req.session.birthday = results[0].birthday;
+					req.session.mob = results[0].mob;
+					req.session.location = results[0].city+", "+results[0].state;
+					var lastlogdt = results[0].lastlogin;
+					if(lastlogdt!=null){
+						req.session.lastlogin = lastlogdt.substring(0,25);
+					}else{
+						req.session.lastlogin = '';
+					}
+					log.info("Login successfulfor the user, "+results[0].user_id);
+					json_responses = {
+						"statusCode" : 200
+					};
+					res.send(json_responses);
 				}
-				log.info("Login successfulfor the user, "+results[0].user_id);
-				json_responses = {
-					"statusCode" : 200
-				};
-				res.send(json_responses);
+				else{
+					json_responses = {
+							"statusCode" : 401
+						};
+						res.send(json_responses);
+				}
+				
 
 			} else {
 				json_responses = {
@@ -72,10 +87,11 @@ exports.register = function(req, res) {
 	var zip = req.param("zip");
 	var json_responses;
 	var dt = new Date();
+	var ciphertext = CryptoJS.AES.encrypt(password, 'ebay_divya');
 	var insertUser = "insert into members(email,password,firstname,lastname,mobile,lastlogin,birthday,street,city,state,country,zip) values('"
 			+ email
 			+ "','"
-			+ password
+			+ ciphertext
 			+ "','"
 			+ firstname
 			+ "','"
@@ -97,7 +113,6 @@ exports.register = function(req, res) {
 			req.session.mob = mob;
 			req.session.location = city+", "+state;
 			req.session.lastlogin = dt.toString().substring(0,25);
-			log.info("Successfully registered the user, "+results[0].user_id);
 			json_responses = {
 				"statusCode" : 200
 			};
